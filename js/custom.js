@@ -31,7 +31,6 @@ fetch('https://fakestoreapi.com/products')
     });
 
     displayProducts(); // Initially display the first 10 products
-    document.getElementById('load-more').style.display = 'block'; // Show load more button
   })
   .catch(error => console.error("FETCH ERROR:", error));
 
@@ -57,13 +56,21 @@ function displayProducts() {
   currentIndex += itemsPerPage; // Update current index
 
   // Hide load more button if no more products
-  if (currentIndex >= filteredProducts.length) {
-    document.getElementById('load-more').style.display = 'none';
-  }
+  updateLoadMoreButtonVisibility();
 }
 
 // Load more products on button click
 document.getElementById('load-more').addEventListener('click', displayProducts);
+
+// Function to update the visibility of the "Load More" button
+function updateLoadMoreButtonVisibility() {
+  const loadMoreButton = document.getElementById('load-more');
+  if (filteredProducts.length <= itemsPerPage || currentIndex >= filteredProducts.length) {
+    loadMoreButton.style.display = 'none';
+  } else {
+    loadMoreButton.style.display = 'block';
+  }
+}
 
 // Category filter function
 window.categoryFilter = () => {
@@ -81,12 +88,7 @@ window.categoryFilter = () => {
   document.getElementById('product-container').innerHTML = ''; // Clear previous products
   displayProducts(); // Display first batch of filtered products
 
-  // Hide load more button if no products
-  if (filteredProducts.length === 0) {
-    document.getElementById('load-more').style.display = 'none';
-  } else {
-    document.getElementById('load-more').style.display = 'block';
-  }
+  updateLoadMoreButtonVisibility(); // Update button visibility
 };
 
 // Sorting function
@@ -138,7 +140,7 @@ const search = () => {
     document.getElementById('load-more').style.display = 'none'; // Hide load more button
   } else {
     noResultsMessage.style.display = 'none'; // Hide message
-    document.getElementById('load-more').style.display = 'block'; // Show load more button
+    updateLoadMoreButtonVisibility(); // Update button visibility
   }
 };
 
